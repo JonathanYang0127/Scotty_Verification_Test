@@ -13,7 +13,6 @@
 # Check: Is there a harmful state after the trigger?
 #
 # Further improvement can be storing the sum 
-# Didn't take account of symmetry
 
 from util import Stack
 
@@ -67,11 +66,13 @@ def depthFirstSearch(min_nodes, max_nodes, max_pods_per_node, initialState, numb
         if(expand[-1] > number_of_rounds):
             #checks if maximum depth we want to search is exceeded
             continue;
-        if(tuple(sort(expand[:-1])) in visited):
+        sorted_list = expand[:-1]
+        sorted_list.sort()
+        if(tuple(sorted_list) in visited):
             #This is a graph search, so no state needs to be visited more than once
             #Sorting makes algorithm more efficient by taking care of symmetry
             continue;
-        visited.add(tuple(sort(expand[:-1])))
+        visited.add(tuple(sorted_list))
         print(expand)
         if(isUnstableState(expand)):
             #Found unstable state. We can terminate the search.
@@ -88,10 +89,10 @@ def createStartState(max_nodes, number_of_nodes, number_of_pods_per_node):
     #last node is the number of depth
 
 if __name__ == "__main__":
-    min_nodes = 2
-    max_nodes = 8
-    max_pods_per_node = 5
-    number_of_rounds = 4
+    min_nodes = 4
+    max_nodes = 4
+    max_pods_per_node = 12
+    number_of_rounds = 8
     number_of_nodes = min_nodes
     number_of_pods_per_node = max_pods_per_node
     print(depthFirstSearch(min_nodes, max_nodes, max_pods_per_node, createStartState(max_nodes, number_of_nodes, number_of_pods_per_node), number_of_rounds))
