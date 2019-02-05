@@ -18,6 +18,7 @@
 from util import Stack
 
 def isUnstableState(state):
+    #quorum
     num_of_nodes = state[len(state)-2]
     average = (sum([state[i] for i in range(num_of_nodes)]))//2
     for i in range(num_of_nodes):
@@ -57,21 +58,27 @@ def getSuccessors(state, min_nodes, max_nodes):
 
 
 def depthFirstSearch(min_nodes, max_nodes, max_pods_per_node, initialState, number_of_rounds):  
+    #initialize state
     s = Stack();
     s.push(initialState)
     visited = set()
     while(not s.isEmpty()):
         expand = s.pop()
         if(expand[-1] > number_of_rounds):
+            #checks if maximum depth we want to search is exceeded
             continue;
-        if(tuple(expand[:-1]) in visited):
+        if(tuple(sort(expand[:-1])) in visited):
+            #This is a graph search, so no state needs to be visited more than once
+            #Sorting makes algorithm more efficient by taking care of symmetry
             continue;
-        visited.add(tuple(expand[:-1]))
+        visited.add(tuple(sort(expand[:-1])))
         print(expand)
         if(isUnstableState(expand)):
+            #Found unstable state. We can terminate the search.
             return False
         for successor in getSuccessors(expand, min_nodes, max_nodes):
             s.push(successor)
+    #No unstable states have been found
     return True
              
 
@@ -82,9 +89,9 @@ def createStartState(max_nodes, number_of_nodes, number_of_pods_per_node):
 
 if __name__ == "__main__":
     min_nodes = 2
-    max_nodes = 4
-    max_pods_per_node = 12
-    number_of_rounds = 1
+    max_nodes = 8
+    max_pods_per_node = 5
+    number_of_rounds = 4
     number_of_nodes = min_nodes
     number_of_pods_per_node = max_pods_per_node
     print(depthFirstSearch(min_nodes, max_nodes, max_pods_per_node, createStartState(max_nodes, number_of_nodes, number_of_pods_per_node), number_of_rounds))
